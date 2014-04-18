@@ -1,4 +1,4 @@
 picarro
 =======
 
-Picarro output file processing
+R script to analyzer Picarro analyzer output files.
