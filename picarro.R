@@ -15,6 +15,7 @@
 # Important variable definitions, esp. data source & destination
 SCRIPTNAME		<- "picarro.R"
 INPUT_DIR		<- "sampledata/"
+#INPUT_DIR <- "/Users/ben/Documents/Work/Current/Bailey\ SFA/DWP\ experiment/Data/Data\ from\ Sarah"
 OUTPUT_DIR		<- "outputs/"
 LOG_DIR			<- "logs/"
 
@@ -89,24 +90,16 @@ loadlibs <- function( liblist ) {
 # -----------------------------------------------------------------------------
 # read a process a single output file, returning data frame
 read_outputfile <- function( fn ) {
-	fqfn <- paste0( INPUT_DIR, fn )
+	fqfn <- paste( INPUT_DIR, fn, sep="/" )
 	printlog( "Reading", fqfn )
 	stopifnot( file.exists( fqfn ) )
-	d <- read.table( fqfn, comment.char=";", sep="\t", header=T )
+	d <- read.table( fqfn, header=T )
 	printdims( d )
 	
 	# Add ancillary data
-	d$filename <- fn
-		
-	# Quality control
-	# TODO: improve this
-	printlog( "Computing CO2~Time R2 values for quality control..." )
-	mods <- dlply( d, .( Plot ), lm, formula = CO2_Ref ~ Sec )
-	r2 <- ldply( mods, .fun=function( x ){ round( summary( x )$r.squared, 2 ) } )
-	names( r2 ) <- c( "Plot", "R2" )
-	r2 <- r2[ order( r2$R2 ), ]
-	print( r2 )
-
+	d$file <- basename( fn )
+	d$dir <- dirname( fn )
+	
 	return( d )
 } # read_outputfile
 
@@ -194,16 +187,39 @@ printlog( "Welcome to", SCRIPTNAME )
 loadlibs( c( "ggplot2", "reshape2", "plyr" ) )
 theme_set( theme_bw() )
 
+tf <- tempfile()
+printlog( "tempfile is", tf )
 alldata <- data.frame()
 filelist <- list.files( path=INPUT_DIR, pattern="dat$", recursive=T )
-for( fn in filelist ) {
+for( f in 1:length( filelist ) ) {
 	printlog( SEPARATOR )
-	alldata <- rbind( alldata, read_outputfile( fn ) )
+	printlog( "Processing file", f, "of", length( filelist ) )
+	d <- read_outputfile( filelist[ f ] )
+	write.table( d, tf, row.names=F, append=( f>1 ), col.names=( f==1 ), sep="," )
 }
 
 printlog( SEPARATOR )
-printlog( "All done reading data." )
+printlog( "All done. Reading data back in..." )
+alldata <- read.csv( tf )
 printdims( alldata )
+
+printlog( "Removing fractional solenoid_valves" )
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )
+printdims( alldata )
+
+printlog( "Computing time elapsed" )
+alldata <- ddply( alldata, .( file ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ] )
+
+printlog( "** NOTE **" )
+printlog( "** Here this script assumes data are stored in a particular way" )
+printlog( "** We assume first folder level of path contains treatment info," )
+printlog( "** the second is a rep, and there are exactly two levels." )
+printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )
+printlog( "** This is very specific to a particular setup-change as necessary." )
+
+alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )
+
+stop('ok')
 
 plotdata <- read_plotdata()
 if( !is.null( plotdata ) ) {
