@@ -1,6 +1,6 @@
 # picarro.R
 # R script (written using 3.0.3) to process Picarro instrument data
-# BBL April 2014
+# BBL May 2014
 
 # To use:
 # 	1. Set SYSTEM_VOLUME and CHAMBER_AREA variables below
