@@ -14,16 +14,21 @@
 
 # Important variable definitions, esp. data source & destination
 SCRIPTNAME		<- "picarro.R"
-INPUT_DIR		<- "sampledata/"
-#INPUT_DIR <- "/Users/ben/Documents/Work/Current/Bailey\ SFA/DWP\ experiment/Data/Data\ from\ Sarah"
+#INPUT_DIR		<- "sampledata/"
+INPUT_DIR <- "~/Documents/Work/Current/Bailey\ SFA/DWP\ experiment/Data/Data\ from\ Sarah"
 OUTPUT_DIR		<- "outputs/"
 LOG_DIR			<- "logs/"
 
-# The optional PLOTDATA file *must* have a 'Plot' field
+# The optional SOLENOIDDATA file *must* have a 'solenoid_valves' field
 # It *may* have 'Mass' and/or 'Area' fields, which will be divided into the computed flux
 #	- if present, the 'Area' field will override CHAMBER_AREA below
 # It *may* have a 'Volume' field, cm3, which will be added to SYSTEM_VOLUME for each plot
-PLOTDATA		<- "sampledata/plotdata.csv"
+SOLENOIDDATA		<- "sampledata/solenoid_valves.csv"
+
+
+# Picarros output a ton of data. For testing, we may want to subsample
+# e.g. 0.1 = sample 10%. Set to 1 for no subsampling
+SUBSAMPLE_FRACTION	<- 0.01
 
 SYSTEM_VOLUME	<- 15.15 / 100^3		# m^3
 CHAMBER_AREA	<- 5.5					# cm^2
@@ -66,11 +71,11 @@ savedata <- function( df, extension=".csv" ) {
 
 # -----------------------------------------------------------------------------
 # Open a csv file and return data
-read_csv <- function( fn, datadir="." ) {
+read_csv <- function( fn, datadir=".", ... ) {
 	fqfn <- paste( datadir, fn, sep="/" )
 	printlog( "Opening", fqfn )
 	stopifnot( file.exists( fqfn ) )
-	read.csv( fqfn, stringsAsFactors=F )
+	read.csv( fqfn, stringsAsFactors=F, ... )
 } # read_csv
 
 # -----------------------------------------------------------------------------
@@ -95,6 +100,12 @@ read_outputfile <- function( fn ) {
 	stopifnot( file.exists( fqfn ) )
 	d <- read.table( fqfn, header=T )
 	printdims( d )
+
+	if( SUBSAMPLE_FRACTION < 1 ) {
+		printlog( "Subsampling at", SUBSAMPLE_FRACTION, "..." )
+		d <- d[ sample( nrow( d ), nrow( d ) * SUBSAMPLE_FRACTION ), ]
+		printdims( d )
+	}
 	
 	# Add ancillary data
 	d$file <- basename( fn )
@@ -203,12 +214,11 @@ printlog( "All done. Reading data back in..." )
 alldata <- read.csv( tf )
 printdims( alldata )
 
+# Fractional solenoid values mean that the analyzer was shifting
+#  between two samples. Discard these
 printlog( "Removing fractional solenoid_valves" )
 alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )
 printdims( alldata )
-
-printlog( "Computing time elapsed" )
-alldata <- ddply( alldata, .( file ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ] )
 
 printlog( "** NOTE **" )
 printlog( "** Here this script assumes data are stored in a particular way" )
@@ -216,16 +226,70 @@ printlog( "** We assume first folder level of path contains treatment info," )
 printlog( "** the second is a rep, and there are exactly two levels." )
 printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )
 printlog( "** This is very specific to a particular setup-change as necessary." )
-
+printlog( "Splitting file path data..." )
 alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )
+
+if( any( names( alldata )=="solenoid_valves" ) ) {
+	sv <- read_csv( "solenoid_valves.csv", INPUT_DIR, comment.char="#" )
+	printlog( "Merging Picarro and solenoid_valves data..." )
+	alldata <- merge( alldata, sv )
+}
+
+	# temporary
+	
+	printlog( "Getting rid of crazy values..." )
+	alldata <- alldata[ alldata$CH4_dry < 5, ]
+
+	printlog( "Focusing on 'real' cores only..." )
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]
+
+
+printlog( "Computing time elapsed" )
+alldata <- alldata[ order( alldata[ 'EPOCH_TIME' ] ), ]
+alldata <- ddply( alldata, .( treatment, rep ), mutate, ELAPSED_TIME=( EPOCH_TIME-EPOCH_TIME[ 1 ] )/60, .progress="text" )
+
+
+fd <- read_csv( "core_data.csv", INPUT_DIR )
+printlog( "Merging Picarro and field data..." )
+alldata <- merge( alldata, fd )
+
+print( summary( alldata ) )
+
+alldata$dwp_core <- as.factor( alldata$dwp_core )
+
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )
+print( p_ch4 )
+saveplot( "summary_ch4_allreps" )
+
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=rep )
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )
+print( p_co2 )
+saveplot( "summary_co2_allreps" )
+
+
+	printlog( "Focusing on rep 1 only..." )
+	alldata1 <- alldata[ alldata$rep=="Rep 1", ]
+
+
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )
+print( p_ch4r1 )
+saveplot( "summary_ch4_rep1" )
+
+p_co2r1 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )
+p_co2r1 <- p_co2r1 + facet_grid( treatment~., scales="free" ) 
+print( p_co2r1 )
+saveplot( "summary_co2_rep1" )
+
+
+saveplot( "summary_ch4_rep1_closeup", p_ch4r1 + xlim( c( 1000,1080 ) ) )
+
+#print( p_co2r1 + xlim( c( 1000,1080 ) ) )
+#saveplot( "summary_co2_rep1_closeup" )
 
 stop('ok')
 
-plotdata <- read_plotdata()
-if( !is.null( plotdata ) ) {
-	printlog( "Merging respiration data with dry mass data..." )
-	alldata <- merge( plotdata, alldata )
-}
 
 printlog( "Computing fluxes..." )
 fluxes <- ddply( alldata, .( filename, Plot ), .fun=compute_flux )

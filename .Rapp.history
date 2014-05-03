@@ -17,7 +17,6 @@ source('picarro.R')
 summary(d)
 summary(alldata)
 qplot(TIME,CO2_dry,data=d)
-qplot(TIME,CO2_dry,data=d)
 qplot(FRAC_DAYS_SINCE_JAN1,CO2_dry,data=d)
 unique(d$solenoid_valves)
 qplot(FRAC_DAYS_SINCE_JAN1,CO2_dry,data=d,color=solenoid_valves)
@@ -37,12 +36,10 @@ identical(d$solenoid_valves,d$solenoid_valves)
 3.000001==3
 head(d)
 source("picarro.R")
-source("picarro.R")
 unique(d$solenoid_valves)
 unique(alldata$solenoid_valves)
 source("picarro.R")
 qplot(FRAC_DAYS_SINCE_JAN1,CO2_dry,data=d,color=factor(solenoid_valves))
-head(alldata)
 head(alldata)
 source("picarro.R")
 head(alldata)
@@ -57,13 +54,9 @@ str_split(head(alldata)$dir,"/")
 colsplit(head(alldata)$dir,"/")
 colsplit(head(alldata)$dir,"/",names=c("trt","date"))
 source('picarro.R')
-source('picarro.R')
 head(alldata)
 source('picarro.R')
 head(alldata)
-source("picarro.R")
-source("picarro.R")
-source("picarro.R")
 source("picarro.R")
 head(alldata)
 ?write.csv
@@ -72,23 +65,636 @@ source("picarro.R")
 source("picarro.R")
 head(alldata)
 sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
-sink()
 qplot(FRAC_DAYS_SINCE_JAN1,CO2_dry,data=alldata,color=factor(solenoid_valves))
 alldata <- ddply( alldata, .( file ), mutate, ELAPSED=EPOCH_TIME-EPOCH_TIME[ 1 ] )
 head(alldata)
 alldata <- ddply( alldata, .( file ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ] )
 qplot(ELAPSED_TIME,CO2_dry,data=alldata,color=factor(solenoid_valves))
+source('picarro.R')
+p_ch4
+p_co2
+p_ch4
+alldata <- alldata[ alldata$CH4_dry < 5, ]
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_co2
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ),geom="line" )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ),alpha=0.5 )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_co2
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=factor( dwp_core ),log="y" )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+p_co2 <- qplot( ELAPSED_TIME, log(CO2_dry), data=alldata, color=factor( dwp_core ) )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=factor( dwp_core ) )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=rep )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=dwp_core )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=factor(dwp_core) )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+nrow(alldata)
+printlog( "Focusing on rep 1 only..." )#
+alldata <- alldata[ alldata$rep=="Rep 1", ]
+nrow(alldata)
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ),size=4 )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ),size=I(4) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ),size=I(2) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ),size=I(1) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+head(alldata)
+uniprintlog( "Focusing on 'real' cores only..." )#
+alldata <- alldata[ !is.na( alldata$dwp_core ), ]
+printlog( "Focusing on 'real' cores only..." )#
+alldata <- alldata[ !is.na( alldata$dwp_core ), ]
+nrow(alldata)
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ),log='y' )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+fd <- read_csv( "field_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )
+fd <- read_csv( "core_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )
+head(alldata)
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=DepthRange )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=DepthRange )#
+p_ch4 <- p_ch4 + facet_grid( DepthRange~treatment, scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=DepthRange )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+unique(alldata$rep)
+printlog( SEPARATOR )#
+printlog( "All done. Reading data back in..." )#
+alldata <- read.csv( tf )#
+printdims( alldata )#
+#
+printlog( "Removing fractional solenoid_valves" )#
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )#
+printdims( alldata )#
+#
+	# temporary#
+	printlog( "Getting rid of crazy values..." )#
+	alldata <- alldata[ alldata$CH4_dry < 5, ]#
+#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata <- alldata[ alldata$rep=="Rep 1", ]#
+#
+	printlog( "Focusing on 'real' cores only..." )#
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]#
+#
+printlog( "Computing time elapsed" )#
+alldata <- ddply( alldata, .( file ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ], .progress="text" )
+printlog( SEPARATOR )#
+printlog( "All done. Reading data back in..." )#
+alldata <- read.csv( tf )#
+printdims( alldata )#
+#
+# Fractional solenoid values mean that the analyzer was shifting between two#
+# samples. Discard these#
+printlog( "Removing fractional solenoid_valves" )#
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )#
+printdims( alldata )#
+#
+printlog( "Computing time elapsed" )#
+alldata <- ddply( alldata, .( file ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ], .progress="text" )#
+#
+printlog( "** NOTE **" )#
+printlog( "** Here this script assumes data are stored in a particular way" )#
+printlog( "** We assume first folder level of path contains treatment info," )#
+printlog( "** the second is a rep, and there are exactly two levels." )#
+printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )#
+printlog( "** This is very specific to a particular setup-change as necessary." )#
+printlog( "Splitting file path data..." )#
+alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )#
+#
+if( any( names( alldata )=="solenoid_valves" ) ) {#
+	sv <- read_csv( "solenoid_valves.csv", INPUT_DIR, comment.char="#" )#
+	printlog( "Merging Picarro and solenoid_valves data..." )#
+	alldata <- merge( alldata, sv )#
+}#
+#
+	# temporary#
+	printlog( "Getting rid of crazy values..." )#
+	alldata <- alldata[ alldata$CH4_dry < 5, ]#
+#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata <- alldata[ alldata$rep=="Rep 1", ]#
+#
+	printlog( "Focusing on 'real' cores only..." )#
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]#
+fd <- read_csv( "core_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )#
+#
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=factor( dwp_core ) )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+head(d)
+head(alldata)
+help(package='reshape')
+alldata <- sort_df( alldata, EPOCH_TIME ) 	# from reshape2
+help(package='reshape2')
+help(package='plyr')
+?order
+alldata <- alldata[ order( alldata$EPOCHTIME ), ]
+nrow(alldata)
+alldata <- alldata[ order( alldata[ EPOCHTIME ], ]
+alldata <- alldata[ order( alldata[ 'EPOCHTIME' ], ]
+alldata <- alldata[ order( alldata[ 'EPOCHTIME' ] ), ]
+alldata <- alldata[ order( alldata[ ,'EPOCHTIME' ] ), ]
+alldata$EPOCHTIME
+alldata <- alldata[ order( alldata[ ,'EPOCH_TIME' ] ), ]
+head(alldata)
+printlog( SEPARATOR )#
+printlog( "All done. Reading data back in..." )#
+alldata <- read.csv( tf )#
+printdims( alldata )#
+#
+# Fractional solenoid values mean that the analyzer was shifting between two#
+# samples. Discard these#
+printlog( "Removing fractional solenoid_valves" )#
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )#
+printdims( alldata )#
+#
+printlog( "Computing time elapsed" )#
+alldata <- alldata[ order( alldata[ EPOCHTIME ], ]#
+alldata <- ddply( alldata, .( file ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ], .progress="text" )
+alldata <- alldata[ order( alldata[ EPOCHTIME ], ]
+alldata <- alldata[ order( alldata[ EPOCHTIME ] ), ]
+alldata <- alldata[ order( alldata[ EPOCH_TIME ] ), ]
+alldata <- alldata[ order( alldata[ 'EPOCH_TIME' ] ), ]
+alldata <- ddply( alldata, .( file ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ], .progress="text" )
+printlog( "** NOTE **" )#
+printlog( "** Here this script assumes data are stored in a particular way" )#
+printlog( "** We assume first folder level of path contains treatment info," )#
+printlog( "** the second is a rep, and there are exactly two levels." )#
+printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )#
+printlog( "** This is very specific to a particular setup-change as necessary." )#
+printlog( "Splitting file path data..." )#
+alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )#
+#
+if( any( names( alldata )=="solenoid_valves" ) ) {#
+	sv <- read_csv( "solenoid_valves.csv", INPUT_DIR, comment.char="#" )#
+	printlog( "Merging Picarro and solenoid_valves data..." )#
+	alldata <- merge( alldata, sv )#
+}#
+#
+	# temporary#
+	printlog( "Getting rid of crazy values..." )#
+	alldata <- alldata[ alldata$CH4_dry < 5, ]#
+#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata <- alldata[ alldata$rep=="Rep 1", ]#
+#
+	printlog( "Focusing on 'real' cores only..." )#
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]#
+fd <- read_csv( "core_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=solenoid_valves )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor(solenoid_valves) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor(solenoid_valves) )#
+p_ch4 <- p_ch4 + facet_grid( dwp_core~treatment, scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor(solenoid_valves) ,geom='line')#
+p_ch4 <- p_ch4 + facet_grid( dwp_core~treatment, scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )
+head(alldata)
+printlog( SEPARATOR )#
+printlog( "All done. Reading data back in..." )#
+alldata <- read.csv( tf )#
+printdims( alldata )#
+#
+# Fractional solenoid values mean that the analyzer was shifting between two#
+# samples. Discard these#
+printlog( "Removing fractional solenoid_valves" )#
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )#
+printdims( alldata )#
+#
+printlog( "Computing time elapsed" )#
+alldata <- alldata[ order( alldata[ 'EPOCH_TIME' ] ), ]#
+alldata <- ddply( alldata, .( treatment, rep ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ], .progress="text" )#
+#
+printlog( "** NOTE **" )#
+printlog( "** Here this script assumes data are stored in a particular way" )#
+printlog( "** We assume first folder level of path contains treatment info," )#
+printlog( "** the second is a rep, and there are exactly two levels." )#
+printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )#
+printlog( "** This is very specific to a particular setup-change as necessary." )#
+printlog( "Splitting file path data..." )#
+alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )#
+#
+if( any( names( alldata )=="solenoid_valves" ) ) {#
+	sv <- read_csv( "solenoid_valves.csv", INPUT_DIR, comment.char="#" )#
+	printlog( "Merging Picarro and solenoid_valves data..." )#
+	alldata <- merge( alldata, sv )#
+}#
+#
+	# temporary#
+	printlog( "Getting rid of crazy values..." )#
+	alldata <- alldata[ alldata$CH4_dry < 5, ]#
+#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata <- alldata[ alldata$rep=="Rep 1", ]#
+#
+	printlog( "Focusing on 'real' cores only..." )#
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]#
+fd <- read_csv( "core_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )#
+#
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4" )#
+#
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=factor( dwp_core ) )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2" )
+printlog( SEPARATOR )#
+printlog( "All done. Reading data back in..." )#
+alldata <- read.csv( tf )#
+printdims( alldata )#
+#
+# Fractional solenoid values mean that the analyzer was shifting between two#
+# samples. Discard these#
+printlog( "Removing fractional solenoid_valves" )#
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )#
+printdims( alldata )#
+#
+printlog( "** NOTE **" )#
+printlog( "** Here this script assumes data are stored in a particular way" )#
+printlog( "** We assume first folder level of path contains treatment info," )#
+printlog( "** the second is a rep, and there are exactly two levels." )#
+printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )#
+printlog( "** This is very specific to a particular setup-change as necessary." )#
+printlog( "Splitting file path data..." )#
+alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )#
+#
+if( any( names( alldata )=="solenoid_valves" ) ) {#
+	sv <- read_csv( "solenoid_valves.csv", INPUT_DIR, comment.char="#" )#
+	printlog( "Merging Picarro and solenoid_valves data..." )#
+	alldata <- merge( alldata, sv )#
+}#
+#
+	# temporary#
+	printlog( "Getting rid of crazy values..." )#
+	alldata <- alldata[ alldata$CH4_dry < 5, ]#
+#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata <- alldata[ alldata$rep=="Rep 1", ]#
+#
+	printlog( "Focusing on 'real' cores only..." )#
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]#
+printlog( "Computing time elapsed" )#
+alldata <- alldata[ order( alldata[ 'EPOCH_TIME' ] ), ]#
+alldata <- ddply( alldata, .( treatment, rep ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ], .progress="text" )#
+fd <- read_csv( "core_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )
+printlog( SEPARATOR )#
+printlog( "All done. Reading data back in..." )#
+alldata <- read.csv( tf )#
+printdims( alldata )#
+#
+# Fractional solenoid values mean that the analyzer was shifting between two#
+# samples. Discard these#
+printlog( "Removing fractional solenoid_valves" )#
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )#
+printdims( alldata )#
+#
+printlog( "** NOTE **" )#
+printlog( "** Here this script assumes data are stored in a particular way" )#
+printlog( "** We assume first folder level of path contains treatment info," )#
+printlog( "** the second is a rep, and there are exactly two levels." )#
+printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )#
+printlog( "** This is very specific to a particular setup-change as necessary." )#
+printlog( "Splitting file path data..." )#
+alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )#
+#
+if( any( names( alldata )=="solenoid_valves" ) ) {#
+	sv <- read_csv( "solenoid_valves.csv", INPUT_DIR, comment.char="#" )#
+	printlog( "Merging Picarro and solenoid_valves data..." )#
+	alldata <- merge( alldata, sv )#
+}#
+#
+	# temporary#
+	printlog( "Getting rid of crazy values..." )#
+	alldata <- alldata[ alldata$CH4_dry < 5, ]#
+#
+#	printlog( "Focusing on rep 1 only..." )#
+#	alldata <- alldata[ alldata$rep=="Rep 1", ]#
+#
+	printlog( "Focusing on 'real' cores only..." )#
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]#
+printlog( "Computing time elapsed" )#
+alldata <- alldata[ order( alldata[ 'EPOCH_TIME' ] ), ]#
+alldata <- ddply( alldata, .( treatment, rep ), mutate, ELAPSED_TIME=EPOCH_TIME-EPOCH_TIME[ 1 ], .progress="text" )#
+fd <- read_csv( "core_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=factor( dwp_core ) )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )
+nrow(alldata)
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-allreps" )#
+#
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=rep )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2-allreps" )
+printlog( SEPARATOR )#
+printlog( "All done. Reading data back in..." )#
+alldata <- read.csv( tf )#
+printdims( alldata )#
+#
+# Fractional solenoid values mean that the analyzer was shifting between two#
+# samples. Discard these#
+printlog( "Removing fractional solenoid_valves" )#
+alldata <- subset( alldata, solenoid_valves==trunc( solenoid_valves ) )#
+printdims( alldata )#
+#
+printlog( "** NOTE **" )#
+printlog( "** Here this script assumes data are stored in a particular way" )#
+printlog( "** We assume first folder level of path contains treatment info," )#
+printlog( "** the second is a rep, and there are exactly two levels." )#
+printlog( "**  i.e. {INPUT_DIR}/treatmentname/repnum/{files}" )#
+printlog( "** This is very specific to a particular setup-change as necessary." )#
+printlog( "Splitting file path data..." )#
+alldata <- cbind( alldata, colsplit( alldata$dir, "/", names=c( "treatment", "rep" ) ) )#
+#
+if( any( names( alldata )=="solenoid_valves" ) ) {#
+	sv <- read_csv( "solenoid_valves.csv", INPUT_DIR, comment.char="#" )#
+	printlog( "Merging Picarro and solenoid_valves data..." )#
+	alldata <- merge( alldata, sv )#
+}#
+#
+	# temporary#
+	printlog( "Getting rid of crazy values..." )#
+	alldata <- alldata[ alldata$CH4_dry < 5, ]#
+#
+	printlog( "Focusing on 'real' cores only..." )#
+	alldata <- alldata[ !is.na( alldata$dwp_core ), ]#
+printlog( "Computing time elapsed" )#
+alldata <- alldata[ order( alldata[ 'EPOCH_TIME' ] ), ]#
+alldata <- ddply( alldata, .( treatment, rep ), mutate, ELAPSED_TIME=( EPOCH_TIME-EPOCH_TIME[ 1 ] )/60, .progress="text" )#
+fd <- read_csv( "core_data.csv", INPUT_DIR )#
+printlog( "Merging Picarro and field data..." )#
+alldata <- merge( alldata, fd )#
+#
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-allreps" )#
+#
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=rep )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2-allreps" )
+alldata$dwp_core <- as.factor( alldata$dwp_core )#
+#
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-allreps" )#
+#
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=rep )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2-allreps" )#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata <- alldata[ alldata$rep=="Rep 1", ]#
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=dwp_core )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-rep1" )#
+#
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=dwp_core )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) #
+print( p_co2 )#
+saveplot( "summary_co2-rep1" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-allreps" )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=dwp_core )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-allreps" )
+p_ch4+xlim(c(1000,1100))
+p_ch4+xlim(c(1000,1100))+geom_line()
+p_ch4+xlim(c(1000,1100))+geom_line(aes(group=1))
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=dwp_core, geom="line",group=1 )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-allreps" )
+nrow(alldata)
+source("picarro.R")
+sink()
+sink()
+sink()
+sink()
+source("picarro.R")
+p_ch4
+p_ch41
+p_co2
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4-allreps" )#
+#
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=rep )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2-allreps" )#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata1 <- alldata[ alldata$rep=="Rep 1", ]
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )#
+saveplot( "summary_ch4-rep1" )#
+#
+p_co2r1 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata1, color=dwp_core )#
+p_co2r1 <- p_co2r1 + facet_grid( treatment~., scales="free" ) #
+print( p_co2r1 )#
+saveplot( "summary_co2-rep1" )
+p_co2
+p_co2r1
+p_co2r1+xlim(c(1000,2000))
+p_co2r1+xlim(c(1000,1100))
+p_ch4
+p_ch4r1
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, color=dwp_core,geom="line",group=1 )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, color=dwp_core,geom="line",group=1,size=3 )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, color=dwp_core,geom="line",group=1,size=2 )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, color=dwp_core,geom="line",group=1,size=I(2) )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, geom="line", group=1, color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )#
+saveplot( "summary_ch4-rep1" )#
+#
+p_co2r1 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata1, geom="line", group=1, color=dwp_core )#
+p_co2r1 <- p_co2r1 + facet_grid( treatment~., scales="free" ) #
+print( p_co2r1 )#
+saveplot( "summary_co2-rep1" )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )#
+saveplot( "summary_ch4-rep1" )#
+#
+p_co2r1 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )#
+p_co2r1 <- p_co2r1 + facet_grid( treatment~., scales="free" ) #
+print( p_co2r1 )#
+saveplot( "summary_co2-rep1" )
+p_ch4
+p_ch41
+p_ch4r1
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep, geom="line" )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )
+p_ch4r1
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, geom="line", size=I( 2 ), color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )
+p_ch4r1+xlim(c(1000,1100))
+p_ch4r1+xlim(c(1000,1050))
+p_ch4r1+xlim(c(1000,1080))
+p_co2r1+xlim(c(1000,1080))
+p_ch4 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata, color=rep )#
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_ch4 )#
+saveplot( "summary_ch4_allreps" )#
+#
+p_co2 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata, color=rep )#
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )#
+print( p_co2 )#
+saveplot( "summary_co2_allreps" )#
+	printlog( "Focusing on rep 1 only..." )#
+	alldata1 <- alldata[ alldata$rep=="Rep 1", ]#
+p_ch4r1 <- qplot( ELAPSED_TIME, CH4_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )#
+p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )#
+print( p_ch4r1 )#
+saveplot( "summary_ch4_rep1" )#
+#
+p_co2r1 <- qplot( ELAPSED_TIME, CO2_dry, data=alldata1, geom="line", group=1, size=I( 2 ), color=dwp_core )#
+p_co2r1 <- p_co2r1 + facet_grid( treatment~., scales="free" ) #
+print( p_co2r1 )#
+saveplot( "summary_co2_rep1" )#
+print( p_ch4r1 + xlim( c( 1000,1080 ) ) )#
+saveplot( "summary_ch4_rep1_closeup" )#
+#
+print( p_co2r1 + xlim( c( 1000,1080 ) ) )#
+saveplot( "summary_co2_rep1_closeup" )
+saveplot( "summary_ch4_rep1_closeup", p_ch4r1 + xlim( c( 1000,1080 ) ) )
+saveplot( "summary_ch4_rep1_closeup", p_ch4r1 + xlim( c( 1000,1080 ) ) )
+write.csv(alldata,'alldata.csv',row.names=F)
