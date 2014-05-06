@@ -281,7 +281,7 @@ summarydata <- subset( summarydata, solenoid_valves==trunc( solenoid_valves ) )
 printdims( rawdata )
 
 # -----------------------------------------------------------------------------
-# This steps makes some assumptions about data setup to assign 'treatment' and 'rep'
+# This step makes some assumptions about data setup to assign 'treatment' and 'rep'
 
 printlog( "** NOTE **" )
 printlog( "** Here this script assumes data are stored in a particular way" )
@@ -315,7 +315,10 @@ if( exists( 'COREDATA' ) ) {
 	summarydata <- merge( summarydata, coredata )
 }
 
-	# TEMPORARY
+# -----------------------------------------------------------------------------
+# Outlier handling
+
+	# TODO: identify outliers algorithmically, identify, save
 	
 	printlog( "Getting rid of crazy values..." )
 	rawdata <- rawdata[ rawdata$CH4_dry < 5, ]
@@ -337,7 +340,6 @@ rawdata <- rawdata[ order( rawdata[ 'EPOCH_TIME' ] ), ]
 rawdata <- ddply( rawdata, .( treatment, rep ), mutate, ELAPSED_MINUTES=( EPOCH_TIME-EPOCH_TIME[ 1 ] )/60, .progress="text" )
 summarydata <- summarydata[ order( summarydata[ 'EPOCH_TIME' ] ), ]
 summarydata <- ddply( summarydata, .( treatment, rep ), mutate, ELAPSED_MINUTES=( EPOCH_TIME-EPOCH_TIME[ 1 ] )/60, .progress="text" )
-
 
 
 # -----------------------------------------------------------------------------
@@ -408,9 +410,11 @@ saveplot( "summary_mCH4CO2_inj2" )
 #print( p_co2r1 + xlim( c( 1000,1080 ) ) )
 #saveplot( "summary_co2_rep1_closeup" )
 
+# -----------------------------------------------------------------------------
+# All done
+
 savedata( rawdata )
 savedata( summarydata )
-
 
 printlog( "All done with", SCRIPTNAME )
 print( sessionInfo() )
