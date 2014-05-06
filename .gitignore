@@ -2,6 +2,9 @@
 .Rhistory
 .Rapp.history
 
+# Mac OS
+*.DS_Store
+
 # Example code in package build process
 *-Ex.R
 
