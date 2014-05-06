@@ -28,15 +28,15 @@ LOG_DIR			<- "logs/"
 
 # The optional VALVEDATA file maps solenoid valves to cores, by e.g.
 # treatment and rep. It *must* have a 'solenoid_valves' field to be merged correctly
-VALVEDATA	<- "sampledata/solenoid_valves.csv"
+VALVEDATA	<- "sampledata/valve_data.csv"
 
 # The optional COREDATA file holds information about the cores
-# To be merged correctly, it must have the same field name (e.g. 'dwp_core') as
+# To be merged correctly, it must have the same field name (e.g. 'corenum') as
 # the solenoid data file. 
 # It *may* have 'Mass' and/or 'Area' fields, which will be divided into the computed flux
 #	- if present, the 'Area' field will override CHAMBER_AREA below
 # It *may* have a 'Volume' field, cm3, which will be added to SYSTEM_VOLUME for each plot
-COREDATA 		<- "core_data.csv"
+COREDATA 		<- "sampledata/core_data.csv"
 
 # Picarros output a ton of data. For testing, we may want to subsample
 # e.g. 0.01 = sample 1%. Set SUBSAMPLE_FRACTION to 1 for no subsampling
@@ -281,7 +281,7 @@ summarydata <- subset( summarydata, solenoid_valves==trunc( solenoid_valves ) )
 printdims( rawdata )
 
 # -----------------------------------------------------------------------------
-# Following processing steps make some assumptions about data setup
+# This steps makes some assumptions about data setup to assign 'treatment' and 'rep'
 
 printlog( "** NOTE **" )
 printlog( "** Here this script assumes data are stored in a particular way" )
@@ -293,6 +293,9 @@ printlog( "Splitting file path data..." )
 rawdata <- cbind( rawdata, colsplit( rawdata$dir, "/", names=c( "treatment", "rep" ) ) )
 summarydata <- cbind( summarydata, colsplit( summarydata$dir, "/", names=c( "treatment", "rep" ) ) )
 
+# -----------------------------------------------------------------------------
+# Merge data with ancillary data about valve assignment and core info
+
 # Merge data with 'valvedata' that describe assignment of valves to cores
 if( any( names( rawdata )=="solenoid_valves" ) & exists( 'VALVEDATA' ) ) {
 	sv <- read_csv( VALVEDATA, comment.char="#" )
@@ -301,15 +304,33 @@ if( any( names( rawdata )=="solenoid_valves" ) & exists( 'VALVEDATA' ) ) {
 	summarydata <- merge( summarydata, sv )
 }
 
+# Merge data with 'coredata' that describe each core
+# The valvedata step above presumably merged a core number that's now used in this merge
+if( exists( 'COREDATA' ) ) {
+	coredata <- read_csv( COREDATA, comment.char="#" )
+	coredata$DepthRange <- factor( coredata$DepthRange, levels=c( "0-30", "30-60", "60-90",
+		"90-120", "120-150", "150-180", "180-210", "210-240" ) )
+	printlog( "Merging Picarro and core data..." )
+	rawdata <- merge( rawdata, coredata )
+	summarydata <- merge( summarydata, coredata )
+}
+
 	# TEMPORARY
 	
 	printlog( "Getting rid of crazy values..." )
 	rawdata <- rawdata[ rawdata$CH4_dry < 5, ]
 	summarydata <- summarydata[ summarydata$CH4_dry < 5, ]
-
+	printdims( rawdata )
+	printdims( summarydata )
+	
 	printlog( "Focusing on 'real' cores only..." )
-	rawdata <- rawdata[ !is.na( rawdata$dwp_core ), ]
-	summarydata <- summarydata[ !is.na( summarydata$dwp_core ), ]
+	rawdata <- rawdata[ !is.na( rawdata$corenum ), ]
+	summarydata <- summarydata[ !is.na( summarydata$corenum ), ]
+	printdims( rawdata )
+	printdims( summarydata )
+
+# -----------------------------------------------------------------------------
+# Compute the time since a particular treatment/rep combination started
 
 printlog( "Computing time elapsed" )
 rawdata <- rawdata[ order( rawdata[ 'EPOCH_TIME' ] ), ]
@@ -318,34 +339,24 @@ summarydata <- summarydata[ order( summarydata[ 'EPOCH_TIME' ] ), ]
 summarydata <- ddply( summarydata, .( treatment, rep ), mutate, ELAPSED_MINUTES=( EPOCH_TIME-EPOCH_TIME[ 1 ] )/60, .progress="text" )
 
 
-# Merge data with 'coredata' that describe each core
-if( exists( 'COREDATA' ) ) {
-	coredata <- read_csv( COREDATA, INPUT_DIR )
-	coredata$DepthRange <- factor( coredata$DepthRange, levels=c( "0-30", "30-60", "60-90",
-		"90-120", "120-150", "150-180", "180-210", "210-240" ) )
-	printlog( "Merging Picarro and core data..." )
-	rawdata <- merge( rawdata, coredata )
-	summarydata <- merge( summarydata, coredata )
-}
-	
-print( summary( rawdata ) )
 
 # -----------------------------------------------------------------------------
 # Summary figures
 
-rawdata$dwp_core <- as.factor( rawdata$dwp_core )
-summarydata$dwp_core <- as.factor( summarydata$dwp_core )
+rawdata$corenum <- as.factor( rawdata$corenum )
+summarydata$corenum <- as.factor( summarydata$corenum )
+print( summary( rawdata ) )
 
-p_ch4 <- ggplot( rawdata, aes( ELAPSED_MINUTES, CH4_dry, color=rep ) )
-p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )
+p_ch4 <- ggplot( rawdata, aes( ELAPSED_MINUTES, CH4_dry, color=rep ) ) + geom_point()
+p_ch4 <- p_ch4 + facet_grid( treatment~., scales="free" )
 print( p_ch4 )
 saveplot( "raw_ch4_allreps" )
 print( p_ch4 %+% summarydata )
 saveplot( "summary_ch4_allreps" )
 
 
-p_co2 <- ggplot( rawdata, aes( ELAPSED_MINUTES, CO2_dry, color=rep ) )
-p_co2 <- p_co2 + facet_grid( treatment~., scales="free" ) + scale_color_discrete( "DWP core" )
+p_co2 <- ggplot( rawdata, aes( ELAPSED_MINUTES, CO2_dry, color=rep ) ) + geom_point()
+p_co2 <- p_co2 + facet_grid( treatment~., scales="free" )
 print( p_co2 )
 saveplot( "raw_co2_allreps" )
 print( p_co2 %+% summarydata )
@@ -359,14 +370,14 @@ saveplot( "summary_co2_allreps" )
 	summarydata1 <- summarydata[ summarydata$rep=="Rep 1", ]
 
 
-	p_ch4r1 <- qplot( ELAPSED_MINUTES, CH4_dry, data=rawdata1, geom="line", group=1, size=I( 2 ), color=dwp_core )
+	p_ch4r1 <- qplot( ELAPSED_MINUTES, CH4_dry, data=rawdata1, geom="line", group=1, size=I( 2 ), color=corenum )
 	p_ch4r1 <- p_ch4r1 + facet_grid( treatment~., scales="free" )
 	print( p_ch4r1 )
 	saveplot( "raw_ch4_rep1" )
 	print( p_ch4r1 %+% summarydata1 )
 	saveplot( "summary_ch4_rep1" )
 
-	p_co2r1 <- qplot( ELAPSED_MINUTES, CO2_dry, data=rawdata1, geom="line", group=1, size=I( 2 ), color=dwp_core )
+	p_co2r1 <- qplot( ELAPSED_MINUTES, CO2_dry, data=rawdata1, geom="line", group=1, size=I( 2 ), color=corenum )
 	p_co2r1 <- p_co2r1 + facet_grid( treatment~., scales="free" ) 
 	print( p_co2r1 )
 	saveplot( "raw_co2_rep1" )
