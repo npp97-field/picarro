@@ -255,7 +255,7 @@ if( exists( "RANDOM_SEED" ) ) {
 	set.seed( RANDOM_SEED )
 }
 
-loadlibs( c( "ggplot2", "reshape2", "plyr" ) )	# the hadleyverse
+loadlibs( c( "ggplot2", "reshape2", "plyr", "lubridate" ) )	# the hadleyverse
 theme_set( theme_bw() )
 
 # -----------------------------------------------------------------------------
@@ -279,6 +279,11 @@ printlog( "Removing fractional solenoid_valves" )
 rawdata <- subset( rawdata, solenoid_valves==trunc( solenoid_valves ) )
 summarydata <- subset( summarydata, solenoid_valves==trunc( solenoid_valves ) )
 printdims( rawdata )
+
+# Make true dates
+# TODO: use this information!
+printlog( "Converting date/time info to POSIXct..." )
+rawdata$DATETIME <- ymd_hms( paste( rawdata$DATE, rawdata$TIME ) )
 
 # -----------------------------------------------------------------------------
 # This step makes some assumptions about data setup to assign 'treatment' and 'rep'
