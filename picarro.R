@@ -85,7 +85,7 @@ savedata <- function( df, extension=".csv" ) {
 # -----------------------------------------------------------------------------
 # Open a csv file and return data
 read_csv <- function( fn, datadir=".", ... ) {
-	fqfn <- paste( datadir, fn, sep="/" )
+	fqfn <- paste( normalizePath( datadir ), fn, sep="/" )
 	printlog( "Opening", fqfn )
 	stopifnot( file.exists( fqfn ) )
 	read.csv( fqfn, stringsAsFactors=F, ... )
@@ -235,12 +235,16 @@ compute_flux <- function( d ) {
 
 
 # ==============================================================================
-# Main
+# 										Main
+# ==============================================================================
 
+INPUT_DIR <- normalizePath( INPUT_DIR )
+OUTPUT_DIR <- normalizePath( OUTPUT_DIR )
 if( !file.exists( OUTPUT_DIR ) ) {
 	printlog( "Creating", OUTPUT_DIR )
 	dir.create( OUTPUT_DIR )
 }
+LOG_DIR <- normalizePath( LOG_DIR )
 if( !file.exists( LOG_DIR ) ) {
 	printlog( "Creating", LOG_DIR )
 	dir.create( LOG_DIR )
@@ -390,9 +394,20 @@ saveplot( "summary_co2_allreps" )
 	saveplot( "raw_co2_rep1" )
 	print( p_co2r1 %+% summarydata1 )
 	saveplot( "summary_co2_rep1" )
+	saveplot( "raw_ch4_rep1_closeup", p_ch4r1 + xlim( c( 1100,1180 ) ) )
 
+	summarydata1_m <- melt( summarydata1, measure.vars=c( 'CH4_dry','CO2_dry' ) )
+	p_ch4co2r1 <- qplot( ELAPSED_MINUTES, value, data=subset( summarydata1_m, treatment=="Injection 1" ), geom="line", group=1, size=I( 2 ), color=corenum )
+	p_ch4co2r1 <- p_ch4co2r1 + facet_grid( variable~., scales="free" ) 
+	p_ch4co2r1 <- p_ch4co2r1 + ggtitle( "Injection 1" )
+	print( p_ch4co2r1 )
+	saveplot( "summary_ch4co2_rep1_inj1" )
+	p_ch4co2r1 <- qplot( ELAPSED_MINUTES, value, data=subset( summarydata1_m, treatment=="Injection 2" ), geom="line", group=1, size=I( 2 ), color=corenum )
+	p_ch4co2r1 <- p_ch4co2r1 + facet_grid( variable~., scales="free" ) 
+	p_ch4co2r1 <- p_ch4co2r1 + ggtitle( "Injection 2" )
+	print( p_ch4co2r1 )
+	saveplot( "summary_ch4co2_rep1_inj2" )
 
-	saveplot( "raw_ch4_rep1_closeup", p_ch4r1 + xlim( c( 1000,1080 ) ) )
 
 
 
@@ -407,7 +422,7 @@ p1 <- p1 + ggtitle( "Injection 1" )
 print( p1 )
 saveplot( "summary_mCH4CO2_inj1" )
 
-p2 <- p2 %+% subset( summarydata_m, treatment=="Injection 2" )
+p2 <- p1 %+% subset( summarydata_m, treatment=="Injection 2" )
 p2 <- p2 + ggtitle( "Injection 2" )
 print( p2 )
 saveplot( "summary_mCH4CO2_inj2" )
